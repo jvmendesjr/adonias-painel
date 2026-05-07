@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dashboard de Medição — MED 16 | Escola FNDE Varjota/CE</title>
+    <title>Dashboard de Medição | Escola FNDE Varjota/CE</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 <style>
@@ -78,14 +78,14 @@
 
   <header class="top">
     <div class="brand">
-      <div class="eyebrow">Boletim de Resultado da Obra · MED 16</div>
+      <div class="eyebrow">Boletim de Resultado da Obra</div>
       <h1>Construção de Escola Padrão FNDE — 13 Salas</h1>
       <div class="sub">Prefeitura Municipal de Varjota/CE · Secretaria de Infraestrutura</div>
     </div>
     <div class="meta">
       <div><strong>Local:</strong> Travessa Romão Lopes, S/N — Centro</div>
       <div><strong>Município:</strong> Varjota/CE</div>
-      <div><strong>Referência:</strong> Medição Acumulada nº 16</div>
+      <div><strong>Referência:</strong> Medição Acumulada nº 17</div>
     </div>
   </header>
 
@@ -98,13 +98,13 @@
     </div>
     <div class="kpi exec">
       <div class="label">Executado Acumulado</div>
-      <div class="value">R$ 4.834.066,72</div>
-      <div class="hint">42,51% concluído</div>
+      <div class="value">R$ 5.137.670,97</div>
+      <div class="hint">45,18% concluído</div>
     </div>
     <div class="kpi saldo">
       <div class="label">Saldo a Executar</div>
-      <div class="value">R$ 6.625.555,38</div>
-      <div class="hint">58,27% restante</div>
+      <div class="value">R$ 6.232.810,02</div>
+      <div class="hint">54,82% restante</div>
     </div>
     <div class="kpi">
       <div class="label">Grupos de Serviço</div>
@@ -123,18 +123,18 @@
           <canvas id="donutChart"></canvas>
         </div>
         <div class="donut-center">
-          <div class="pct">42,51%</div>
+          <div class="pct">45,18%</div>
           <div class="lbl">Executado</div>
         </div>
       </div>
       <div class="legend-row">
-        <span><span class="dot" style="background:#1e40af"></span>Executado (42,51%)</span>
-        <span><span class="dot" style="background:#e2e8f0"></span>Saldo (58,27%)</span>
+        <span><span class="dot" style="background:#1e40af"></span>Executado (45,18%)</span>
+        <span><span class="dot" style="background:#e2e8f0"></span>Saldo (54,82%)</span>
       </div>
     </div>
 
     <div class="card">
-      <h2>Avanço Físico-Financeiro por Grupo de Serviço (%)</h2>
+      <h2>Avanço Físico por Grupo de Serviço (%)</h2>
       <div class="desc">Comparativo entre o percentual executado e o saldo a executar — por grupo principal</div>
       <div class="chart-box bars-pct">
         <canvas id="barsPctChart"></canvas>
@@ -154,7 +154,7 @@
   </section>
 
   <footer>
-    Dashboard gerado a partir do Boletim de Resultado da Obra MED 16 · Dados oficiais da planilha de medição acumulada
+    Dashboard gerado a partir do Boletim de Resultado da Obra · Dados oficiais da planilha de medição acumulada
   </footer>
 </div>
 
@@ -165,16 +165,16 @@ Chart.defaults.color = "#475569";
 
 // ===== Dados =====
 const grupos = [
-  {n:1,  nome:"Serviços Preliminares",            global:684654.46,   exec:434197.50,   saldo:250456.96,   pctE:63.42, pctS:36.58},
+  {n:1,  nome:"Serviços Preliminares",            global:684654.46,   exec:447008.12,   saldo:237646.34,   pctE:65.29, pctS:34.71},
   {n:2,  nome:"Movimento de Terra p/ Fundações",  global:90150.96,    exec:81741.31,    saldo:8409.65,     pctE:90.67, pctS:9.33},
   {n:3,  nome:"Fundações",                        global:1104619.52,  exec:736196.06,   saldo:368423.46,   pctE:66.65, pctS:33.35},
-  {n:4,  nome:"Superestrutura",                   global:2222054.46,  exec:1204814.89,  saldo:1017239.57,  pctE:54.22, pctS:45.78},
-  {n:5,  nome:"Sistema de Vedação Vertical",      global:377324.83,   exec:220520.74,   saldo:156804.09,   pctE:58.44, pctS:41.56},
+  {n:4,  nome:"Superestrutura",                   global:2222054.46,  exec:1474061.43,  saldo:747993.03,   pctE:66.34, pctS:33.66},
+  {n:5,  nome:"Sistema de Vedação Vertical",      global:377324.83,   exec:233146.22,   saldo:144178.61,   pctE:61.78, pctS:38.22},
   {n:6,  nome:"Esquadrias",                       global:785936.36,   exec:0,           saldo:785936.36,   pctE:0,     pctS:100},
-  {n:7,  nome:"Sistemas de Cobertura",            global:996831.50,   exec:454831.77,   saldo:541999.73,   pctE:45.63, pctS:54.37},
-  {n:8,  nome:"Impermeabilização",                global:114456.44,   exec:82408.32,    saldo:32048.12,    pctE:72.00, pctS:28.00},
-  {n:9,  nome:"Revestimentos Interno e Externo",  global:711799.62,   exec:231275.02,   saldo:480524.60,   pctE:32.50, pctS:67.50},
-  {n:10, nome:"Sistemas de Pisos",                global:1069402.44,  exec:220572.52,   saldo:848829.92,   pctE:20.63, pctS:79.37},
+  {n:7,  nome:"Sistemas de Cobertura",            global:996831.50,   exec:536630.84,   saldo:460200.66,   pctE:53.83, pctS:46.17},
+  {n:8,  nome:"Impermeabilização",                global:114456.44,   exec:96142.68,    saldo:18313.76,    pctE:84.00, pctS:16.00},
+  {n:9,  nome:"Revestimentos Interno e Externo",  global:711799.62,   exec:242478.89,   saldo:469320.73,   pctE:34.07, pctS:65.93},
+  {n:10, nome:"Sistemas de Pisos",                global:1069402.44,  exec:220572.04,   saldo:848830.4,    pctE:20.63, pctS:79.37},
   {n:11, nome:"Pinturas e Acabamentos",           global:183638.08,   exec:0,           saldo:183638.08,   pctE:0,     pctS:100},
   {n:12, nome:"Instalação Hidráulica",            global:238548.46,   exec:32045.84,    saldo:206502.62,   pctE:13.43, pctS:86.57},
   {n:13, nome:"Drenagem de Águas Pluviais",       global:138080.57,   exec:73494.01,    saldo:64586.56,    pctE:53.23, pctS:46.77},
@@ -189,7 +189,7 @@ const grupos = [
   {n:22, nome:"SPDA",                             global:79589.52,    exec:0,           saldo:79589.52,    pctE:0,     pctS:100},
   {n:23, nome:"Serviços Complementares",          global:209804.48,   exec:0,           saldo:209804.48,   pctE:0,     pctS:100},
   {n:24, nome:"Serviços Finais",                  global:10422.40,    exec:0,           saldo:10422.40,    pctE:0,     pctS:100},
-  {n:25, nome:"Aditivo",                          global:1079847.22,  exec:1079847.22,  saldo:0,           pctE:100,   pctS:0}
+  {n:25, nome:"Aditivo",                          global:1079847.22,  exec:883479.52,   saldo:196367.70,   pctE:81.81, pctS:18.19}
 ];
 
 const fmtBRL = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2});
@@ -205,7 +205,7 @@ new Chart(document.getElementById('donutChart'), {
   data:{
     labels:['Executado','Saldo'],
     datasets:[{
-      data:[42.51, 58.27],
+      data:[45.18, 54.82],
       backgroundColor:['#1e40af','#e2e8f0'],
       borderColor:'#ffffff',
       borderWidth:3,
@@ -226,7 +226,7 @@ new Chart(document.getElementById('donutChart'), {
       tooltip:{
         callbacks:{
           label:(ctx)=>{
-            const valores = [4834066.72, 6625555.38];
+            const valores = [5137670.97, 6232810.02];
             return ` ${ctx.label}: ${ctx.parsed.toFixed(2).replace('.',',')}% (${fmtBRL(valores[ctx.dataIndex])})`;
           }
         }
