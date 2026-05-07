@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard de Medição — MED 16 | Escola FNDE Varjota/CE</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --ink:#0f172a;
+    --ink-2:#475569;
+    --line:#e2e8f0;
+    --accent:#1e40af;
+    --accent-2:#0ea5e9;
+    --exec:#1e40af;
+    --saldo:#e2e8f0;
+    --warn:#dc2626;
+    --ok:#059669;
+    --shadow: 0 1px 3px rgba(15,23,42,.06), 0 8px 24px rgba(15,23,42,.04);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter','Segoe UI',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1440px;margin:0 auto;padding:32px 28px 48px}
+  header.top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:24px}
+  .brand{display:flex;flex-direction:column;gap:4px}
+  .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--ink-2);text-transform:uppercase;font-weight:600}
+  h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.02em}
+  .sub{font-size:13px;color:var(--ink-2);margin-top:2px}
+  .meta{text-align:right;font-size:12px;color:var(--ink-2);line-height:1.6}
+  .meta strong{color:var(--ink);font-weight:600}
+
+  /* KPI cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow)}
+  .kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-2);font-weight:600}
+  .kpi .value{font-size:24px;font-weight:700;margin-top:8px;letter-spacing:-.02em}
+  .kpi .hint{font-size:12px;color:var(--ink-2);margin-top:4px}
+  .kpi.accent .value{color:var(--accent)}
+  .kpi.exec .value{color:var(--ok)}
+  .kpi.saldo .value{color:var(--warn)}
+
+  /* Grid layout */
+  .grid{display:grid;grid-template-columns:1.1fr 1.4fr;gap:20px;margin-bottom:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+  .card h2{margin:0 0 4px;font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .card .desc{font-size:12px;color:var(--ink-2);margin-bottom:18px}
+  .card.full{grid-column:1/-1}
+  .chart-box{position:relative;width:100%}
+  .chart-box.donut{height:340px}
+  .chart-box.bars-pct{height:560px}
+  .chart-box.bars-val{height:560px}
+
+  /* Donut center label */
+  .donut-wrap{position:relative}
+  .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+  .donut-center .pct{font-size:38px;font-weight:700;color:var(--accent);letter-spacing:-.02em;line-height:1}
+  .donut-center .lbl{font-size:11px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.14em;margin-top:6px;font-weight:600}
+
+  /* Legend tweaks */
+  .legend-row{display:flex;gap:18px;justify-content:center;margin-top:14px;font-size:12px;color:var(--ink-2)}
+  .legend-row .dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+  footer{margin-top:24px;text-align:center;font-size:11px;color:var(--ink-2);letter-spacing:.04em}
+
+  @media (max-width:980px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid{grid-template-columns:1fr}
+    .meta{text-align:left;margin-top:8px}
+    header.top{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">Boletim de Medição · MED 16</div>
+      <h1>Construção de Escola Padrão FNDE — 13 Salas</h1>
+      <div class="sub">Prefeitura Municipal de Varjota/CE · Secretaria de Infraestrutura</div>
+    </div>
+    <div class="meta">
+      <div><strong>Local:</strong> Travessa Romão Lopes, S/N — Centro</div>
+      <div><strong>Município:</strong> Varjota/CE</div>
+      <div><strong>Referência:</strong> Medição Acumulada nº 16</div>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <section class="kpis">
+    <div class="kpi accent">
+      <div class="label">Valor Total da Obra</div>
+      <div class="value">R$ 11.370.480,99</div>
+      <div class="hint">Contrato + Aditivo</div>
+    </div>
+    <div class="kpi exec">
+      <div class="label">Executado Acumulado</div>
+      <div class="value">R$ 4.834.066,72</div>
+      <div class="hint">42,51% concluído</div>
+    </div>
+    <div class="kpi saldo">
+      <div class="label">Saldo a Executar</div>
+      <div class="value">R$ 6.625.555,38</div>
+      <div class="hint">58,27% restante</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Grupos de Serviço</div>
+      <div class="value">25</div>
+      <div class="hint">Itens principais monitorados</div>
+    </div>
+  </section>
+
+  <!-- Linha 1: Donut + Barras % -->
+  <section class="grid">
+    <div class="card">
+      <h2>Avanço Geral da Obra</h2>
+      <div class="desc">Percentual executado vs. saldo a executar (visão consolidada)</div>
+      <div class="donut-wrap">
+        <div class="chart-box donut">
+          <canvas id="donutChart"></canvas>
+        </div>
+        <div class="donut-center">
+          <div class="pct">42,51%</div>
+          <div class="lbl">Executado</div>
+        </div>
+      </div>
+      <div class="legend-row">
+        <span><span class="dot" style="background:#1e40af"></span>Executado (42,51%)</span>
+        <span><span class="dot" style="background:#e2e8f0"></span>Saldo (58,27%)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Avanço Físico-Financeiro por Grupo de Serviço (%)</h2>
+      <div class="desc">Comparativo entre o percentual executado e o saldo a executar — por grupo principal</div>
+      <div class="chart-box bars-pct">
+        <canvas id="barsPctChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Linha 2: Saldo em Valor (full width) -->
+  <section class="grid">
+    <div class="card full">
+      <h2>Saldo a Executar por Grupo de Serviço (R$)</h2>
+      <div class="desc">Valor financeiro pendente de execução em cada grupo principal — ordenado por maior saldo</div>
+      <div class="chart-box bars-val">
+        <canvas id="barsValChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Dashboard gerado a partir do Boletim de Medição MED 16 · Dados oficiais da planilha de medição acumulada
+  </footer>
+</div>
+
+<script>
+Chart.register(ChartDataLabels);
+Chart.defaults.font.family = "'Inter','Segoe UI',sans-serif";
+Chart.defaults.color = "#475569";
+
+// ===== Dados =====
+const grupos = [
+  {n:1,  nome:"Serviços Preliminares",            global:684654.46,   exec:434197.50,   saldo:250456.96,   pctE:63.42, pctS:36.58},
+  {n:2,  nome:"Movimento de Terra p/ Fundações",  global:90150.96,    exec:81741.31,    saldo:8409.65,     pctE:90.67, pctS:9.33},
+  {n:3,  nome:"Fundações",                        global:1104619.52,  exec:736196.06,   saldo:368423.46,   pctE:66.65, pctS:33.35},
+  {n:4,  nome:"Superestrutura",                   global:2222054.46,  exec:1204814.89,  saldo:1017239.57,  pctE:54.22, pctS:45.78},
+  {n:5,  nome:"Sistema de Vedação Vertical",      global:377324.83,   exec:220520.74,   saldo:156804.09,   pctE:58.44, pctS:41.56},
+  {n:6,  nome:"Esquadrias",                       global:785936.36,   exec:0,           saldo:785936.36,   pctE:0,     pctS:100},
+  {n:7,  nome:"Sistemas de Cobertura",            global:996831.50,   exec:454831.77,   saldo:541999.73,   pctE:45.63, pctS:54.37},
+  {n:8,  nome:"Impermeabilização",                global:114456.44,   exec:82408.32,    saldo:32048.12,    pctE:72.00, pctS:28.00},
+  {n:9,  nome:"Revestimentos Interno e Externo",  global:711799.62,   exec:231275.02,   saldo:480524.60,   pctE:32.50, pctS:67.50},
+  {n:10, nome:"Sistemas de Pisos",                global:1069402.44,  exec:220572.52,   saldo:848829.92,   pctE:20.63, pctS:79.37},
+  {n:11, nome:"Pinturas e Acabamentos",           global:183638.08,   exec:0,           saldo:183638.08,   pctE:0,     pctS:100},
+  {n:12, nome:"Instalação Hidráulica",            global:238548.46,   exec:32045.84,    saldo:206502.62,   pctE:13.43, pctS:86.57},
+  {n:13, nome:"Drenagem de Águas Pluviais",       global:138080.57,   exec:73494.01,    saldo:64586.56,    pctE:53.23, pctS:46.77},
+  {n:14, nome:"Instalação Sanitária",             global:115737.43,   exec:52276.83,    saldo:63460.60,    pctE:45.17, pctS:54.83},
+  {n:15, nome:"Louças, Acessórios e Metais",      global:110577.24,   exec:0,           saldo:110577.24,   pctE:0,     pctS:100},
+  {n:16, nome:"Instalação de Gás Combustível",    global:5589.85,     exec:0,           saldo:5589.85,     pctE:0,     pctS:100},
+  {n:17, nome:"Sist. Proteção Contra Incêndio",   global:191769.84,   exec:0,           saldo:191769.84,   pctE:0,     pctS:100},
+  {n:18, nome:"Instalação Elétrica – 220V",       global:569791.76,   exec:28397.18,    saldo:541394.58,   pctE:4.98,  pctS:95.02},
+  {n:19, nome:"Instalações de Climatização",      global:54009.91,    exec:0,           saldo:54009.91,    pctE:0,     pctS:100},
+  {n:20, nome:"Cabeamento Estruturado",           global:210037.55,   exec:0,           saldo:210037.55,   pctE:0,     pctS:100},
+  {n:21, nome:"Sistema de Exaustão Mecânica",     global:15806.09,    exec:0,           saldo:15806.09,    pctE:0,     pctS:100},
+  {n:22, nome:"SPDA",                             global:79589.52,    exec:0,           saldo:79589.52,    pctE:0,     pctS:100},
+  {n:23, nome:"Serviços Complementares",          global:209804.48,   exec:0,           saldo:209804.48,   pctE:0,     pctS:100},
+  {n:24, nome:"Serviços Finais",                  global:10422.40,    exec:0,           saldo:10422.40,    pctE:0,     pctS:100},
+  {n:25, nome:"Aditivo",                          global:1079847.22,  exec:1079847.22,  saldo:0,           pctE:100,   pctS:0}
+];
+
+const fmtBRL = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2});
+const fmtBRLshort = v => {
+  if (v >= 1e6) return 'R$ ' + (v/1e6).toFixed(2).replace('.',',') + ' M';
+  if (v >= 1e3) return 'R$ ' + (v/1e3).toFixed(0) + ' k';
+  return 'R$ ' + v.toFixed(0);
+};
+
+// ===== 1) Donut: avanço geral =====
+new Chart(document.getElementById('donutChart'), {
+  type:'doughnut',
+  data:{
+    labels:['Executado','Saldo'],
+    datasets:[{
+      data:[42.51, 58.27],
+      backgroundColor:['#1e40af','#e2e8f0'],
+      borderColor:'#ffffff',
+      borderWidth:3,
+      hoverOffset:6
+    }]
+  },
+  options:{
+    cutout:'72%',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      datalabels:{
+        color:ctx => ctx.dataIndex===0 ? '#fff' : '#475569',
+        font:{weight:'700', size:13},
+        formatter:(v)=> v.toFixed(2).replace('.',',')+'%'
+      },
+      tooltip:{
+        callbacks:{
+          label:(ctx)=>{
+            const valores = [4834066.72, 6625555.38];
+            return ` ${ctx.label}: ${ctx.parsed.toFixed(2).replace('.',',')}% (${fmtBRL(valores[ctx.dataIndex])})`;
+          }
+        }
+      }
+    }
+  }
+});
+
+// ===== 2) Barras % por grupo (apenas itens 1 a 25) =====
+const labelsCurtos = grupos.map(g => `${g.n}. ${g.nome}`);
+
+new Chart(document.getElementById('barsPctChart'),{
+  type:'bar',
+  data:{
+    labels:labelsCurtos,
+    datasets:[
+      {
+        label:'Executado (%)',
+        data:grupos.map(g=>g.pctE),
+        backgroundColor:'#1e40af',
+        borderRadius:{topRight:4,bottomRight:4},
+        stack:'pct'
+      },
+      {
+        label:'Saldo (%)',
+        data:grupos.map(g=>g.pctS),
+        backgroundColor:'#e2e8f0',
+        borderRadius:{topRight:4,bottomRight:4},
+        stack:'pct'
+      }
+    ]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    scales:{
+      x:{
+        stacked:true, max:100,
+        ticks:{ callback:v=>v+'%', font:{size:11} },
+        grid:{color:'#f1f5f9'}
+      },
+      y:{
+        stacked:true,
+        ticks:{font:{size:10.5}},
+        grid:{display:false}
+      }
+    },
+    plugins:{
+      legend:{
+        position:'top',
+        align:'end',
+        labels:{boxWidth:10, boxHeight:10, font:{size:11}, color:'#475569'}
+      },
+      datalabels:{
+        color:(ctx)=> ctx.datasetIndex===0 ? '#fff' : '#64748b',
+        font:{size:10, weight:'600'},
+        formatter:(v)=> v >= 8 ? v.toFixed(0)+'%' : '',
+        anchor:'center', align:'center'
+      },
+      tooltip:{
+        callbacks:{
+          label:(ctx)=> ` ${ctx.dataset.label}: ${ctx.parsed.x.toFixed(2).replace('.',',')}%`
+        }
+      }
+    }
+  }
+});
+
+// ===== 3) Barras saldo R$ por grupo (ordenado decrescente) =====
+const ordenado = [...grupos].sort((a,b)=> b.saldo - a.saldo);
+const corBarra = (g)=>{
+  if (g.pctE === 0)   return '#dc2626';   // nada executado
+  if (g.pctE < 25)    return '#f97316';   // crítico
+  if (g.pctE < 60)    return '#eab308';   // andamento
+  return '#059669';                        // avançado
+};
+
+new Chart(document.getElementById('barsValChart'),{
+  type:'bar',
+  data:{
+    labels: ordenado.map(g => `${g.n}. ${g.nome}`),
+    datasets:[{
+      label:'Saldo a executar (R$)',
+      data: ordenado.map(g=>g.saldo),
+      backgroundColor: ordenado.map(corBarra),
+      borderRadius:4,
+      barThickness: 16
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    scales:{
+      x:{
+        ticks:{ callback:v=>fmtBRLshort(v), font:{size:11} },
+        grid:{color:'#f1f5f9'}
+      },
+      y:{
+        ticks:{font:{size:10.5}},
+        grid:{display:false}
+      }
+    },
+    plugins:{
+      legend:{display:false},
+      datalabels:{
+        color:'#0f172a',
+        anchor:'end', align:'end',
+        font:{size:10, weight:'600'},
+        formatter:(v)=> v > 0 ? fmtBRLshort(v) : '—',
+        clip:false
+      },
+      tooltip:{
+        callbacks:{
+          label:(ctx)=>{
+            const g = ordenado[ctx.dataIndex];
+            return [
+              ` Saldo: ${fmtBRL(g.saldo)} (${g.pctS.toFixed(2).replace('.',',')}%)`,
+              ` Global: ${fmtBRL(g.global)}`,
+              ` Executado: ${fmtBRL(g.exec)} (${g.pctE.toFixed(2).replace('.',',')}%)`
+            ];
+          }
+        }
+      }
+    },
+    layout:{padding:{right:60}}
+  }
+});
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
