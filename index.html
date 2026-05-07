@@ -103,8 +103,8 @@
     </div>
     <div class="kpi saldo">
       <div class="label">Saldo a Executar</div>
-      <div class="value">R$ 6.232.810,02</div>
-      <div class="hint">54,82% restante</div>
+      <div class="value">R$ 6.321.951,13</div>
+      <div class="hint">55,60% restante</div>
     </div>
     <div class="kpi">
       <div class="label">Grupos de Serviço</div>
@@ -129,7 +129,7 @@
       </div>
       <div class="legend-row">
         <span><span class="dot" style="background:#1e40af"></span>Executado (45,18%)</span>
-        <span><span class="dot" style="background:#e2e8f0"></span>Saldo (54,82%)</span>
+        <span><span class="dot" style="background:#e2e8f0"></span>Saldo (55,60%)</span>
       </div>
     </div>
 
@@ -168,13 +168,13 @@ const grupos = [
   {n:1,  nome:"Serviços Preliminares",            global:684654.46,   exec:447008.12,   saldo:237646.34,   pctE:65.29, pctS:34.71},
   {n:2,  nome:"Movimento de Terra p/ Fundações",  global:90150.96,    exec:81741.31,    saldo:8409.65,     pctE:90.67, pctS:9.33},
   {n:3,  nome:"Fundações",                        global:1104619.52,  exec:736196.06,   saldo:368423.46,   pctE:66.65, pctS:33.35},
-  {n:4,  nome:"Superestrutura",                   global:2222054.46,  exec:1474061.43,  saldo:747993.03,   pctE:66.34, pctS:33.66},
+  {n:4,  nome:"Superestrutura",                   global:2222054.46,  exec:1474061.43,  saldo:857175.25,   pctE:63.23, pctS:36.77},
   {n:5,  nome:"Sistema de Vedação Vertical",      global:377324.83,   exec:233146.22,   saldo:144178.61,   pctE:61.78, pctS:38.22},
   {n:6,  nome:"Esquadrias",                       global:785936.36,   exec:0,           saldo:785936.36,   pctE:0,     pctS:100},
   {n:7,  nome:"Sistemas de Cobertura",            global:996831.50,   exec:536630.84,   saldo:460200.66,   pctE:53.83, pctS:46.17},
   {n:8,  nome:"Impermeabilização",                global:114456.44,   exec:96142.68,    saldo:18313.76,    pctE:84.00, pctS:16.00},
   {n:9,  nome:"Revestimentos Interno e Externo",  global:711799.62,   exec:242478.89,   saldo:469320.73,   pctE:34.07, pctS:65.93},
-  {n:10, nome:"Sistemas de Pisos",                global:1069402.44,  exec:220572.04,   saldo:848830.4,    pctE:20.63, pctS:79.37},
+  {n:10, nome:"Sistemas de Pisos",                global:1069402.44,  exec:220572.04,   saldo:1013985.82,  pctE:17.87, pctS:82.13},
   {n:11, nome:"Pinturas e Acabamentos",           global:183638.08,   exec:0,           saldo:183638.08,   pctE:0,     pctS:100},
   {n:12, nome:"Instalação Hidráulica",            global:238548.46,   exec:32045.84,    saldo:206502.62,   pctE:13.43, pctS:86.57},
   {n:13, nome:"Drenagem de Águas Pluviais",       global:138080.57,   exec:73494.01,    saldo:64586.56,    pctE:53.23, pctS:46.77},
@@ -187,9 +187,9 @@ const grupos = [
   {n:20, nome:"Cabeamento Estruturado",           global:210037.55,   exec:0,           saldo:210037.55,   pctE:0,     pctS:100},
   {n:21, nome:"Sistema de Exaustão Mecânica",     global:15806.09,    exec:0,           saldo:15806.09,    pctE:0,     pctS:100},
   {n:22, nome:"SPDA",                             global:79589.52,    exec:0,           saldo:79589.52,    pctE:0,     pctS:100},
-  {n:23, nome:"Serviços Complementares",          global:209804.48,   exec:0,           saldo:209804.48,   pctE:0,     pctS:100},
+  {n:23, nome:"Serviços Complementares",          global:209804.48,   exec:0,           saldo:220975.65,   pctE:0,     pctS:100},
   {n:24, nome:"Serviços Finais",                  global:10422.40,    exec:0,           saldo:10422.40,    pctE:0,     pctS:100},
-  {n:25, nome:"Aditivo",                          global:1079847.22,  exec:883479.52,   saldo:196367.70,   pctE:81.81, pctS:18.19}
+  {n:25, nome:"Aditivo",                          global:1079847.22,  exec:1079847.22,  saldo:0,           pctE:100,   pctS:0}
 ];
 
 const fmtBRL = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2});
@@ -205,7 +205,7 @@ new Chart(document.getElementById('donutChart'), {
   data:{
     labels:['Executado','Saldo'],
     datasets:[{
-      data:[45.18, 54.82],
+      data:[45.18, 55.60],
       backgroundColor:['#1e40af','#e2e8f0'],
       borderColor:'#ffffff',
       borderWidth:3,
@@ -226,7 +226,7 @@ new Chart(document.getElementById('donutChart'), {
       tooltip:{
         callbacks:{
           label:(ctx)=>{
-            const valores = [5137670.97, 6232810.02];
+            const valores = [5137670.97, 6321951.13];
             return ` ${ctx.label}: ${ctx.parsed.toFixed(2).replace('.',',')}% (${fmtBRL(valores[ctx.dataIndex])})`;
           }
         }
